@@ -14,14 +14,18 @@ import sys
 import threading
 import time
 
+# Force UTF-8 stdout/stderr so rich's Unicode glyphs render on Windows consoles
+# (default cp1252 cannot encode characters like ▶, ✓, 👋).
+if sys.stdout.encoding and sys.stdout.encoding.lower() != "utf-8":
+    sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
+
 import httpx
 import uvicorn
 from rich.console import Console
 from rich.rule import Rule
 
 # ── Import server and client ──────────────────────────────────────────────────
-sys.path.insert(0, "")
-
 from greeting_agent.__main__ import create_app, HOST, PORT
 from client_agent.client import run_client
 

@@ -1,0 +1,19 @@
+# A2A Greeting Demo dependencies
+# Tested on Python 3.11 / Windows 11
+
+# Core: A2A SDK with HTTP server extra (pulls in sse-starlette, etc.)
+a2a-sdk[http-server]>=1.0,<2.0
+
+# Pin protobuf to 5.x — a2a-sdk 1.0.x is incompatible with protobuf 6.x/7.x
+# (FieldDescriptor.label was removed/changed in newer versions)
+protobuf>=5,<6
+
+# Web server runtime
+uvicorn>=0.30
+starlette>=0.36
+
+# HTTP client used by the demo and SDK
+httpx>=0.28
+
+# Pretty CLI output
+rich>=13

@@ -18,7 +18,14 @@ SDK classes used:
 """
 
 import asyncio
+import sys
 import uuid
+
+# Force UTF-8 stdout/stderr so rich's Unicode glyphs render on Windows consoles
+# (default cp1252 cannot encode characters like ✓, ←, 👋).
+if sys.stdout.encoding and sys.stdout.encoding.lower() != "utf-8":
+    sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
 
 import httpx
 from rich.console import Console

@@ -86,9 +86,11 @@ python -m venv .venv
 # macOS / Linux:
 source .venv/bin/activate
 
-# Install dependencies
-pip install a2a-sdk uvicorn starlette httpx rich
+# Install dependencies (uses requirements.txt with pinned versions)
+pip install -r requirements.txt
 ```
+
+> **Why a `requirements.txt`?** `a2a-sdk 1.0.x` is incompatible with `protobuf>=6`. Plain `pip install a2a-sdk` will pull the latest protobuf and crash with `FieldDescriptor object has no attribute 'label'`. The requirements file pins `protobuf>=5,<6` to avoid this.
 
 ### Run
 
@@ -183,7 +185,16 @@ The A2A SDK gives you typed protobuf models (`AgentCard`, `Task`, `Message`, `Ar
 ## Troubleshooting
 
 **`ModuleNotFoundError: No module named 'a2a'`**
-You're running outside the virtual environment, or the SDK isn't installed. Activate the venv and run `pip install a2a-sdk`.
+You're running outside the virtual environment, or the SDK isn't installed. Activate the venv and run `pip install -r requirements.txt`.
+
+**`ModuleNotFoundError: No module named 'sse_starlette'`**
+The `a2a-sdk` was installed without the `[http-server]` extra. Run `pip install -r requirements.txt` (or `pip install "a2a-sdk[http-server]"`).
+
+**`AttributeError: 'google._upb._message.FieldDescriptor' object has no attribute 'label'`**
+You have `protobuf>=6` installed, which is incompatible with `a2a-sdk 1.0.x`. Run `pip install "protobuf>=5,<6"`.
+
+**Garbled glyphs / `UnicodeEncodeError: 'charmap' codec` on Windows**
+Already handled by `run_demo.py` and `client.py` — they reconfigure stdout to UTF-8. If you still see issues, set `set PYTHONIOENCODING=utf-8` (cmd) or `$env:PYTHONIOENCODING="utf-8"` (PowerShell) before running.
 
 **`Port 9999 already in use`**
 Another process is using the port. Change `PORT` in [`greeting_agent/__main__.py`](greeting_agent/__main__.py) and update `SERVER_BASE_URL` in [`client_agent/client.py`](client_agent/client.py) to match.
